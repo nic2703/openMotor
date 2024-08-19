@@ -33,7 +33,7 @@ class Exporter(Converter):
         title = 'Export {}'.format(self.name)
         types = self.getFileTypeString()
         if not self.confirmOverwrite:
-            path = QFileDialog.getSaveFileName(None, title, '', types, options=QFileDialog.DontConfirmOverwrite)[0]
+            path = QFileDialog.getSaveFileName(None, title, '', types, options=QFileDialog.Option.DontConfirmOverwrite)[0]
         else:
             path = QFileDialog.getSaveFileName(None, title, '', types)[0]
         if path == '' or path is None:
