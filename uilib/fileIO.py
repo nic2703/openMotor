@@ -4,7 +4,7 @@ import platform
 
 from PyQt6.QtWidgets import QApplication
 import yaml
-import appdirs
+import platformdirs
 
 from .defaults import DEFAULT_PREFERENCES, DEFAULT_PROPELLANTS, KNSU_PROPS
 from .logger import logger
@@ -59,7 +59,7 @@ def loadFile(path, dataType):
  # Mac OS put these files alongside the executable, but the v0.5.0 added an installer for windows so it makes more
  # sense to use the user's data directory now.
 def getConfigPath():
-    path = appdirs.user_data_dir('openMotor', 'openMotor')
+    path = platformdirs.user_data_dir('openMotor', 'openMotor')
     if not os.path.isdir(path): # Create directory if it doesn't exist
         os.mkdir(path)
     return '{}/'.format(path)
