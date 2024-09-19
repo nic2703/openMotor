@@ -22,7 +22,7 @@ Planned Features:
 
 The calculations involved were sourced from Rocket Propulsion Elements by George Sutton and from [Richard Nakka's website](https://www.nakka-rocketry.net/rtheory.html).
 
-![Screenshot](http://reilley.net/openMotor/screenshot.png)
+![Screenshot](https://www.reilley.net/openMotor/screenshot.png)
 
 Download
 -------
