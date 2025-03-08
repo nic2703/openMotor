@@ -1,8 +1,8 @@
-from PyQt6.QtWidgets import QWidget, QHeaderView, QLabel
+from PyQt6.QtWidgets import QWidget, QHeaderView, QLabel, QTableWidgetItem
 import numpy as np
 
 import motorlib
-from motorlib.simResult import singleValueChannels, multiValueChannels
+from motorlib.simResult import singleValueChannels, multiValueChannels, alertLevelNames, alertTypeNames
 
 from .grainImageWidget import GrainImageWidget
 
@@ -32,6 +32,13 @@ class ResultsWidget(QWidget):
 
         self.ui.horizontalSliderTime.valueChanged.connect(self.updateGrainTab)
         self.ui.tableWidgetGrains.setRowHeight(0, 128)
+
+        header = self.ui.tableWidgetAlerts.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+
         self.grainImageWidgets = []
         self.grainImages = []
         self.grainLabels = []
@@ -69,6 +76,14 @@ class ResultsWidget(QWidget):
                 self.grainLabels[gid][field] = QLabel(field)
                 self.ui.tableWidgetGrains.setCellWidget(1 + fid, gid, self.grainLabels[gid][field])
         self.updateGrainTab()
+
+        self.ui.tableWidgetAlerts.setRowCount(0) # Clear the table
+        self.ui.tableWidgetAlerts.setRowCount(len(simResult.alerts))
+        for row, alert in enumerate(simResult.alerts):
+            self.ui.tableWidgetAlerts.setItem(row, 0, QTableWidgetItem(alertLevelNames[alert.level]))
+            self.ui.tableWidgetAlerts.setItem(row, 1, QTableWidgetItem(alertTypeNames[alert.type]))
+            self.ui.tableWidgetAlerts.setItem(row, 2, QTableWidgetItem(alert.location))
+            self.ui.tableWidgetAlerts.setItem(row, 3, QTableWidgetItem(alert.description))
 
     def xSelectionChanged(self):
         if self.ui.channelSelectorX.getSelectedChannels()[0] in multiValueChannels:

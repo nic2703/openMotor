@@ -286,6 +286,37 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabAlerts">
+      <attribute name="title">
+       <string>Alerts</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QTableWidget" name="tableWidgetAlerts">
+         <column>
+          <property name="text">
+           <string>Level</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Location</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Details</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
