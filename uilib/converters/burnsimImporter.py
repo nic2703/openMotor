@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 
 import motorlib
+from motorlib.constants import gasConstant, standardGravity
 
 from ..converter import Importer
 
@@ -26,6 +27,7 @@ def inToM(value):
     return motorlib.units.convert(float(value), 'in', 'm')
 
 def importPropellant(node):
+    errors = ''
     propellant = motorlib.propellant.Propellant()
     propTab = motorlib.propellant.PropellantTab()
     propellant.setProperty('name', node.attrib['Name'])
@@ -37,19 +39,25 @@ def importPropellant(node):
     propTab.setProperty('a', ballA)
     density = motorlib.units.convert(float(node.attrib['Density']), 'lb/in^3', 'kg/m^3')
     propellant.setProperty('density', density)
-    propTab.setProperty('k', float(node.attrib['SpecificHeatRatio']))
+    gamma = float(node.attrib['SpecificHeatRatio'])
+    propTab.setProperty('k', gamma)
     impMolarMass = node.attrib['MolarMass']
-    # If the user has entered 0, override it to match the default propellant.
+    # If the user didn't set molar mass, it'll come through as 0. If this happens, use a sensible default
     if impMolarMass == '0':
-        propTab.setProperty('m', 23.67)
+        molarMass = 23.67
+        errors = "Propellant didn't specify molar mass, using default.\n"
     else:
-        propTab.setProperty('m', float(impMolarMass))
-    # Burnsim doesn't provide this property. Set it to match the default propellant.
-    propTab.setProperty('t', 3500)
+        molarMass = float(impMolarMass)
+    propTab.setProperty('m', molarMass)
+    # Burnsim doesn't provide temperature (always 0), but we can back it out using things they do provide
+    cstar = float(node.attrib['ISPStar']) * standardGravity
+    temperature = (cstar ** 2) * gamma * ((2 / (gamma + 1))**((gamma + 1) / (gamma - 1))) / gasConstant * molarMass
+    propTab.setProperty('t', temperature)
+
     propTab.setProperty('minPressure', 0)
     propTab.setProperty('maxPressure', 6.895e+06)
     propellant.setProperty('tabs', [propTab.getProperties()])
-    return propellant
+    return propellant, errors
 
 class BurnSimImporter(Importer):
     def __init__(self, manager):
@@ -109,7 +117,9 @@ class BurnSimImporter(Importer):
                         motor.grains[-1].setProperty('numFins', int(child.attrib['FinCount']))
 
                     if not propSet: # Use propellant numbers from the forward grain
-                        motor.propellant = importPropellant(child.find('Propellant'))
+                        motor.propellant, propellantErrors = importPropellant(child.find('Propellant'))
+                        if propellantErrors != '':
+                            errors += propellantErrors
                         propSet = True
 
                 else:
@@ -125,7 +135,9 @@ class BurnSimImporter(Importer):
 
             if child.tag == "Propellant":
                 if not propSet:
-                    motor.propellant = importPropellant(child)
+                    motor.propellant, propellantErrors = importPropellant(child)
+                    if propellantErrors != '':
+                        errors += propellantErrors
                     propSet = True
 
         if errors != '':

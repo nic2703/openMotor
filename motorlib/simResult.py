@@ -6,6 +6,7 @@ from enum import Enum
 
 from . import geometry
 from . import units
+from . import constants
 
 class SimAlertLevel(Enum):
     """Levels of severity for sim alerts"""
@@ -220,7 +221,7 @@ class SimulationResult():
             propMass = self.getPropellantMass() - self.getPropellantMass(index)
         if propMass == 0:
             return 0
-        return self.getImpulse(index) / (propMass * 9.80665)
+        return self.getImpulse(index) / (propMass * constants.standardGravity)
 
     def getPortRatio(self):
         """Returns the port/throat ratio of the motor, or None if it doesn't have a port."""

@@ -3,6 +3,7 @@ import numpy as np
 
 import motorlib
 from motorlib.simResult import singleValueChannels, multiValueChannels, alertLevelNames, alertTypeNames
+from motorlib.constants import standardGravity
 
 from .grainImageWidget import GrainImageWidget
 
@@ -141,7 +142,7 @@ class ResultsWidget(QWidget):
             currentISP = self.simResult.getISP(index)
             self.ui.labelISPProgress.setText('{:.3f} s'.format(currentISP))
             if currentMass != 0:
-                remainingISP = remainingImpulse / (currentMass * 9.80665)
+                remainingISP = remainingImpulse / (currentMass * standardGravity)
                 self.ui.labelISPRemaining.setText('{:.3f} s'.format(remainingISP))
             else:
                 self.ui.labelISPRemaining.setText('-')
