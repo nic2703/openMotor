@@ -62,7 +62,7 @@
             <x>0</x>
             <y>0</y>
             <width>218</width>
-            <height>563</height>
+            <height>560</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -293,6 +293,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QTableWidget" name="tableWidgetAlerts">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
          <column>
           <property name="text">
            <string>Level</string>
