@@ -78,6 +78,14 @@ def migrateMotor_0_5_0_to_0_6_0(data):
             grain['properties']['invertedFins'] = False
     return data
 
+def migratePref_0_5_0_to_0_6_0(data):
+    # If they are using the units that are becoming internal-only, replace them
+    if data['units']['m/(s*Pa)'] in ('m/(s*Pa)', 'm/(s*MPa)'):
+        data['units']['(m*Pa)/s'] = 'um/(s*mPa)'
+    if data['units']['m/(s*Pa^n)'] == 'm/(s*Pa^n)':
+        data['units']['m/(s*Pa^n)'] = 'mm/(s*Pa^n)'
+    return data
+
 # 0.4.0 to 0.5.0
 
 def migrateProp_0_4_0_to_0_5_0(data):
@@ -161,7 +169,7 @@ def migrateMotor_0_2_0_to_0_3_0(data):
 migrations = {
     (0, 5, 0): {
         'to': (0, 6, 0),
-        fileTypes.PREFERENCES: passthrough,
+        fileTypes.PREFERENCES: migratePref_0_5_0_to_0_6_0,
         fileTypes.PROPELLANTS: passthrough,
         fileTypes.MOTOR: migrateMotor_0_5_0_to_0_6_0,
         fileTypes.RECENT_FILES: passthrough
