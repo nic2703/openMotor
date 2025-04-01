@@ -1,6 +1,6 @@
 [Setup]
 AppName=openMotor
-AppVersion=0.5.0
+AppVersion=0.6.0
 WizardStyle=modern
 DefaultDirName={autopf}\openMotor
 DefaultGroupName=openMotor
@@ -9,7 +9,7 @@ Compression=lzma2
 SolidCompression=yes
 
 [Files]
-Source: "../pyinstaller/dist/openMotor/*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "../dist/openMotor/*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
 Name: "{group}\openMotor"; Filename: "{app}\openMotor.exe"
