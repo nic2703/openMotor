@@ -368,6 +368,7 @@ class Window(QMainWindow):
     def motorImported(self):
         self.ui.motorEditor.close()
         self.postLoadUpdate()
+        self.getQuickResults(self.app.fileManager.getCurrentMotor())
 
     def loadMotor(self, path=None):
         self.disablePropSelector()

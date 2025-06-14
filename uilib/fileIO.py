@@ -9,7 +9,7 @@ import platformdirs
 from .defaults import DEFAULT_PREFERENCES, DEFAULT_PROPELLANTS, KNSU_PROPS
 from .logger import logger
 
-appVersion = (0, 6, 0)
+appVersion = (0, 6, 1)
 appVersionStr = '.'.join(map(str, appVersion))
 
 class fileTypes(Enum):
@@ -167,6 +167,13 @@ def migrateMotor_0_2_0_to_0_3_0(data):
     return data
 
 migrations = {
+    (0, 6, 0): {
+        'to': (0, 6, 1),
+        fileTypes.PREFERENCES: passthrough,
+        fileTypes.PROPELLANTS: passthrough,
+        fileTypes.MOTOR: passthrough,
+        fileTypes.RECENT_FILES: passthrough
+    },
     (0, 5, 0): {
         'to': (0, 6, 0),
         fileTypes.PREFERENCES: migratePref_0_5_0_to_0_6_0,

@@ -1,4 +1,5 @@
 import sys
+import os
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
@@ -12,12 +13,13 @@ from uilib import preferencesManager, propellantManager, simulationManager, file
 from uilib import importExportManager
 import uilib.widgets.mainWindow
 from uilib.logger import logger
+from uilib.fileIO import appVersionStr
 
 class App(QApplication):
     def __init__(self, args):
         super().__init__(args)
 
-        self.icon = QIcon('resources/oMIconCyclesSmall.png')
+        self.icon = QIcon(os.path.join(os.path.dirname(sys.argv[0]), 'resources/oMIconCyclesSmall.png'))
 
         self.headless = '-h' in args
 
@@ -74,7 +76,10 @@ class App(QApplication):
         else:
             usingDarkMode = self.isDarkMode()
             currentTheme = self.style().objectName()
+            logger.log('openMotor version "{}"'.format(appVersionStr))
             logger.log('Opening window (dark mode: {}, default theme: "{}")'.format(usingDarkMode, currentTheme))
+            if startupFileLoaded:
+                logger.log('Loaded startup file from "{}"'.format(args[-1]))
             # Windows 10 and before don't have dark mode versions of their themes, so if the user wants dark mode, we have to switch to fusion
             if usingDarkMode and currentTheme in ['windows', 'windowsvista']:
                 logger.log('Overriding theme to fusion to get dark mode')
@@ -83,6 +88,7 @@ class App(QApplication):
             self.preferencesManager.publishPreferences()
             if startupFileLoaded:
                 self.fileManager.sendTitleUpdate()
+                self.window.getQuickResults(self.fileManager.getCurrentMotor())
             self.window.show()
             logger.log('Window opened')
 
