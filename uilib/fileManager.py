@@ -31,8 +31,11 @@ class FileManager(QObject):
 
         self.newFile()
 
+        self.recentlyOpenedMenu = None
         self.recentlyOpenedFiles = []
         self.recentFilesPath = os.path.join(getConfigPath(), 'recent_files.yaml')
+
+        self.loadRecentlyOpenedFilesList()
 
     # Check if current motor is unsaved and start over from default motor. Called when the menu item is triggered.
     def newFile(self):
@@ -245,9 +248,7 @@ class FileManager(QObject):
 
         return motor
 
-    def createRecentlyOpenedMenu(self, recentlyOpenedMenu):
-        self.recentlyOpenedMenu = recentlyOpenedMenu
-
+    def loadRecentlyOpenedFilesList(self):
         try:
             self.recentFilesList = loadFile(self.recentFilesPath, fileTypes.RECENT_FILES)['recentFilesList']
         except FileNotFoundError:
@@ -255,9 +256,15 @@ class FileManager(QObject):
             self.recentFilesList = []
             saveFile(self.recentFilesPath, {'recentFilesList': self.recentFilesList}, fileTypes.RECENT_FILES)
 
+    def createRecentlyOpenedMenu(self, recentlyOpenedMenu):
+        self.recentlyOpenedMenu = recentlyOpenedMenu
+        self.loadRecentlyOpenedFilesList()
         self.createRecentlyOpenedItems()
 
     def createRecentlyOpenedItems(self):
+        if self.recentlyOpenedMenu is None:
+            return
+
         self.recentlyOpenedMenu.clear()
 
         if len(self.recentFilesList) == 0:
