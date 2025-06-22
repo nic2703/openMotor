@@ -32,7 +32,7 @@ class Window(QMainWindow):
                                ]
 
         self.app.fileManager.fileNameChanged.connect(self.updateWindowTitle)
-        self.app.fileManager.newMotor.connect(self.resetOutput)
+        self.app.fileManager.newMotor.connect(lambda _: self.resetOutput(True))
         self.app.fileManager.newMotor.connect(self.getQuickResults)
         self.app.fileManager.recentFileLoaded.connect(self.motorImported)
 
@@ -340,10 +340,11 @@ class Window(QMainWindow):
         cm = self.app.fileManager.getCurrentMotor()
         self.app.simulationManager.runSimulation(cm)
 
-    def resetOutput(self):
+    def resetOutput(self, keepGrainChecks = True):
         self.setupMotorStats()
         self.ui.resultsWidget.resetPlot()
         self.updateGrainTable()
+        self.ui.resultsWidget.setupGrainChecks(len(self.app.fileManager.getCurrentMotor().grains), keepGrainChecks)
 
     def undo(self):
         self.app.fileManager.undo()
@@ -382,7 +383,7 @@ class Window(QMainWindow):
     # Clear out all info related to old motor/sim in the interface
     def postLoadUpdate(self):
         self.disablePropSelector() # It is enabled again at the end of updatePropBoxSelection
-        self.resetOutput()
+        self.resetOutput(False)
         self.updateGrainTable()
         self.populatePropSelector()
         self.updatePropBoxSelection()

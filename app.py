@@ -89,6 +89,7 @@ class App(QApplication):
             if startupFileLoaded:
                 self.fileManager.sendTitleUpdate()
                 self.window.getQuickResults(self.fileManager.getCurrentMotor())
+                self.window.ui.resultsWidget.setupGrainChecks(len(self.fileManager.getCurrentMotor().grains), False)
             self.window.show()
             logger.log('Window opened')
 

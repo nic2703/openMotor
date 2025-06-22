@@ -10,7 +10,7 @@ from .grainImageWidget import GrainImageWidget
 from ..views.ResultsWidget_ui import Ui_ResultsWidget
 
 class ResultsWidget(QWidget):
-    # These channels are extracted from the simResult amd put into the grain table in this order that should match
+    # These channels are extracted from the simResult and put into the grain table in this order that should match
     # the labels in the .ui file
     grainTableFields = ('mass', 'massFlow', 'massFlux', 'web')
 
@@ -48,16 +48,19 @@ class ResultsWidget(QWidget):
         self.preferences = pref
         self.ui.widgetGraph.setPreferences(pref)
 
-    def showData(self, simResult):
-        if self.simResult is not None:
-            newMotor = len(simResult.motor.grains) != len(self.simResult.motor.grains)
-        else:
-            newMotor = True
-        self.simResult = simResult
+    def setupGrainChecks(self, numGrains, restoreCachedChecks):
         self.ui.grainSelector.resetChecks()
-        self.ui.grainSelector.setupChecks(simResult, True)
-        if not newMotor and self.cachedChecks is not None:
+        self.ui.grainSelector.setupChecks(numGrains, True)
+        if restoreCachedChecks and self.cachedChecks is not None and len(self.cachedChecks) > 0 and max(self.cachedChecks or []) < self.ui.grainSelector.getNumberChecks():
             self.ui.grainSelector.setChecks(self.cachedChecks)
+        else:
+            self.cachedChecks = None
+
+    def showData(self, simResult):
+        self.simResult = simResult
+
+        self.setupGrainChecks(len(simResult.motor.grains), True)
+
         self.drawGraphs()
 
         self.cleanupGrainTab()
@@ -149,6 +152,7 @@ class ResultsWidget(QWidget):
 
     def resetPlot(self):
         self.cachedChecks = self.ui.grainSelector.getSelectedGrains()
+        self.simResult = None
         self.ui.grainSelector.resetChecks()
         self.ui.widgetGraph.resetPlot()
         self.cleanupGrainTab()
