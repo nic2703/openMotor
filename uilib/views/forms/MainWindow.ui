@@ -227,7 +227,7 @@
         <item>
          <widget class="QPushButton" name="pushButtonAddGrain">
           <property name="text">
-           <string>Add grain</string>
+           <string>Add Grain</string>
           </property>
          </widget>
         </item>

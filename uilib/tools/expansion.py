@@ -7,7 +7,7 @@ class ExpansionTool(Tool):
     def __init__(self, manager):
         props = {}
         super().__init__(manager,
-                         'Nozzle expansion',
+                         'Nozzle Expansion',
                          'Use this tool to set the nozzle exit diameter to optimize expansion for your configured ambient pressure.',
                          props,
                          True)
