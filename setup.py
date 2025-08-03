@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages, Extension
-from uilib.fileIO import appVersionStr
 from Cython.Build import cythonize
 import numpy
 import multiprocessing
@@ -11,6 +10,12 @@ except ImportError:
     print('pyqt_distutils not found, build_ui command will be unavailable')
     build_ui = None  # user won't have pyqt_distutils when deploying
     cmdclass = {}
+
+try:
+    from uilib.fileIO import appVersionStr
+except ImportError:
+    print('App version not available, defaulting to 0.0.0')
+    appVersionStr = '0.0.0'
 
 extensions = [
     Extension(
