@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QDialog, QApplication
 from PyQt6.QtCore import pyqtSignal
 
-from ..views.Preferences_ui import Ui_PreferencesDialog
+from uilib.views.Preferences_ui import Ui_PreferencesDialog
 
 
 class PreferencesMenu(QDialog):
