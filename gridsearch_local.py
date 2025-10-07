@@ -5,6 +5,7 @@ from tqdm import tqdm
 from motorlib.motor import Motor
 import motorlib
 from motorlib.simResult import SimulationResult
+from pathlib import Path
 
 
 def create_df(simulationresult: SimulationResult):
@@ -309,14 +310,35 @@ if __name__ == "__main__":
 
     varspec = {
         "grains.2.properties.coreDiameter,grains.3.properties.coreDiameter,grains.4.properties.coreDiameter":
-            {"min": 0.0254, "max": 0.13335, "step": 0.0254}
+            {"min": 0.0254, "max": 0.13335, "step": 0.00254}
     }
 
+    output_dir = Path("outputs")
+    output_dir.mkdir(exist_ok=True)
+
     results = run_gridsearch(maindict, varspec)
+    for i, r in enumerate(results):
+        try:
+            df = r.get("df")
+            if df is not None:
+                df.to_csv(output_dir / f"run_{i}.csv")
+            else:
+                print(f"⚠️ Skipping run {i}: df is None")
+        except Exception as e:
+            print(f"❌ Error saving run {i}: {e}")
+
     summary = pd.DataFrame([
         {k: v for k, v in r.items() if k not in ["df", "params"]} for r in results
     ])
     print(summary)
+    summary.to_csv(output_dir / "summary.csv", index=False)
 
-    filtered = filter_results(results, ["PeakMassFlux < 1054", "MaxPressure < 7122284"])
-    print(filtered)
+    try:
+        filtered = filter_results(results, [
+            "PeakMassFlux < 1054.62",
+            "MaxPressure < 7122284"
+        ])
+        print(filtered)
+        filtered.to_csv(output_dir / "filtered.csv", index=False)
+    except Exception as e:
+        print(f"❌ Error filtering results: {e}")
