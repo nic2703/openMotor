@@ -6,6 +6,7 @@ from motorlib.motor import Motor
 import motorlib
 from motorlib.simResult import SimulationResult
 from pathlib import Path
+from datetime import datetime
 
 
 def create_df(simulationresult: SimulationResult):
@@ -309,12 +310,15 @@ if __name__ == "__main__":
     maindict: dict[str, dict] = {"nozzle": nozzledict, "propellant": propdict, "grains": graindicts, "config": configdict}
 
     varspec = {
-        "grains.2.properties.coreDiameter,grains.3.properties.coreDiameter,grains.4.properties.coreDiameter":
-            {"min": 0.0254, "max": 0.13335, "step": 0.00254}
+        # "grains.0.properties.coreDiameter,grains.1.properties.coreDiameter,grains.2.properties.coreDiameter,grains.3.properties.coreDiameter,grains.4.properties.coreDiameter":
+        #     {"min": 0.0254, "max": 0.13335, "step": 0.00254},
+        "grains.2.properties.finLength,grains.3.properties.finLength,grains.4.properties.finLength": {"min": 0.0, "max": 0.13335, "step": 0.00254},
+        "grains.2.properties.finWidth,grains.3.properties.finWidth,grains.4.properties.finWidth": {"min": 0.00635, "max": 0.0254, "step": 0.00254}
     }
 
-    output_dir = Path("outputs")
-    output_dir.mkdir(exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = Path("outputs") / timestamp
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     results = run_gridsearch(maindict, varspec)
     for i, r in enumerate(results):
@@ -328,7 +332,7 @@ if __name__ == "__main__":
             print(f"❌ Error saving run {i}: {e}")
 
     summary = pd.DataFrame([
-        {k: v for k, v in r.items() if k not in ["df", "params"]} for r in results
+        {k: v for k, v in r.items() if k not in ["df"]} for r in results
     ])
     print(summary)
     summary.to_csv(output_dir / "summary.csv", index=False)
