@@ -122,6 +122,9 @@ def run_gridsearch(base_config: dict, varspec: dict | None = None) -> list[dict]
         for keypath, value in combo.items():
             update_nested_dict(config, keypath, value)
 
+        throat = config["nozzle"]["throat"]
+        config["nozzle"]["exit"] = throat * 2.857
+
         try:
             motor = Motor(config)
             simresult = motor.runSimulation()
@@ -310,8 +313,9 @@ if __name__ == "__main__":
     maindict: dict[str, dict] = {"nozzle": nozzledict, "propellant": propdict, "grains": graindicts, "config": configdict}
 
     varspec = {
-        # "grains.0.properties.coreDiameter,grains.1.properties.coreDiameter,grains.2.properties.coreDiameter,grains.3.properties.coreDiameter,grains.4.properties.coreDiameter":
-        #     {"min": 0.0254, "max": 0.13335, "step": 0.00254},
+        "nozzle.throat": {"min": 0.01905, "max": 0.0508, "step": 0.00254},
+        "grains.0.properties.coreDiameter,grains.1.properties.coreDiameter,grains.2.properties.coreDiameter,grains.3.properties.coreDiameter,grains.4.properties.coreDiameter":
+            {"min": 0.0254, "max": 0.13335, "step": 0.00254},
         "grains.2.properties.finLength,grains.3.properties.finLength,grains.4.properties.finLength": {"min": 0.0, "max": 0.13335, "step": 0.00254},
         "grains.2.properties.finWidth,grains.3.properties.finWidth,grains.4.properties.finWidth": {"min": 0.00635, "max": 0.0254, "step": 0.00254}
     }
@@ -339,8 +343,8 @@ if __name__ == "__main__":
 
     try:
         filtered = filter_results(results, [
-            "PeakMassFlux < 1054.62",
-            "MaxPressure < 7122284"
+            "PeakMassFlux < 1054.62", #kg/m^2s
+            "MaxPressure < 7122284" #Pa
         ])
         print(filtered)
         filtered.to_csv(output_dir / "filtered.csv", index=False)
