@@ -175,7 +175,7 @@ def filter_results(results, constraints: list[str]) -> pd.DataFrame:
         
         row = {}
         row.update(attrs)
-        row.update({k: v for k, v in r.items() if k not in ("df",)})
+        row.update({k: v for k, v in r.items() if k not in ("df","motor",)})
         records.append(row)
 
     df = pd.DataFrame(records)
@@ -316,8 +316,8 @@ if __name__ == "__main__":
         "nozzle.throat": {"min": 0.01905, "max": 0.0508, "step": 0.00254},
         "grains.0.properties.coreDiameter,grains.1.properties.coreDiameter,grains.2.properties.coreDiameter,grains.3.properties.coreDiameter,grains.4.properties.coreDiameter":
             {"min": 0.0254, "max": 0.13335, "step": 0.00254},
-        "grains.2.properties.finLength,grains.3.properties.finLength,grains.4.properties.finLength": {"min": 0.0, "max": 0.13335, "step": 0.00254},
-        "grains.2.properties.finWidth,grains.3.properties.finWidth,grains.4.properties.finWidth": {"min": 0.00635, "max": 0.0254, "step": 0.00254}
+    #     "grains.2.properties.finLength,grains.3.properties.finLength,grains.4.properties.finLength": {"min": 0.0, "max": 0.13335, "step": 0.00254},
+    #     "grains.2.properties.finWidth,grains.3.properties.finWidth,grains.4.properties.finWidth": {"min": 0.00635, "max": 0.0254, "step": 0.00254}
     }
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
