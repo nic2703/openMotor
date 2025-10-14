@@ -96,6 +96,13 @@ def decode_params(x: np.ndarray, base_config: Dict, design_rules: Dict, schema: 
 
         grains = []
         for i in range(n):
+            if i == 0:
+                inhibited = "Bottom"
+            elif i == n - 1:
+                inhibited = "Top"
+            else:
+                inhibited = "Both"
+
             grains.append({
                 "type": "Finocyl",
                 "properties": {
@@ -105,7 +112,7 @@ def decode_params(x: np.ndarray, base_config: Dict, design_rules: Dict, schema: 
                     "finWidth": float(finw[i]),
                     "finLength": float(finl[i]),
                     "numFins": int(num_fins),
-                    "inhibitedEnds": "None"
+                    "inhibitedEnds": inhibited
                 }
             })
         return grains

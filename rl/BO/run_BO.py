@@ -81,7 +81,7 @@ if __name__ == "__main__":
     design_schema: parser.Schema = parser.build_schema(design_rules)
     lb, ub = parser.schema_to_bounds(design_schema)
 
-    best_x, best_score = bo_optimize(initial_config, design_rules, design_schema, lb, ub, n_iter=100)
+    best_x, best_score = bo_optimize(initial_config, design_rules, design_schema, lb, ub, n_iter=25)
     best_config = encode_decode.decode_params(best_x, initial_config, design_rules, design_schema)
-    save_as.save_motor_as_ric(Motor(best_config))
+    save_as.save_motor_locally(Motor(best_config))
 

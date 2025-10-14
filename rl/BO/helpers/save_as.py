@@ -1,7 +1,10 @@
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from motorlib.motor import Motor
 from uilib.fileIO import saveFile, fileTypes
+from datetime import datetime
+from pathlib import Path
 
 def save_motor_as_ric(motor: Motor) -> str | None:
     """
@@ -21,6 +24,8 @@ def save_motor_as_ric(motor: Motor) -> str | None:
     root = tk.Tk()
     root.withdraw()
     root.update_idletasks()
+
+    print("Save As Window Opened!")
 
     try:
         path = filedialog.asksaveasfilename(
@@ -51,3 +56,20 @@ def save_motor_as_ric(motor: Motor) -> str | None:
         raise
     finally:
         root.destroy()
+
+def save_motor_locally(motor: Motor) -> str | None:
+    print("Automatically saving to output/")
+
+    time = datetime.now()
+    time = time.strftime("%Y%M%d_%H%M%S")
+    root_path = sys.path[0]
+    path = Path(f"{root_path}/outputs/{time}_motor.ric")
+
+    print(path)
+
+    data = motor.getDict()
+    saveFile(path, data, fileTypes.MOTOR)
+
+    
+
+
