@@ -1,2 +1,0 @@
-ISP > 200
-MaxPressure < 1.0e7

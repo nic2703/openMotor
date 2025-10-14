@@ -1,0 +1,94 @@
+{
+  "nozzle": {
+    "throat": 0.03556007,
+    "exit": 0.1016002,
+    "efficiency": 0.96,
+    "divAngle": 15.0,
+    "convAngle": 60.0,
+    "throatLength": 0.00508001,
+    "slagCoeff": 0.0,
+    "erosionCoeff": 0.0
+  },
+  "propellant": {
+    "name": "MIT - Deimos",
+    "density": 1653.59714122,
+    "tabs": [
+      {
+        "minPressure": 0,
+        "maxPressure": 13790000.0,
+        "a": 0.00002215029,
+        "n": 0.3624,
+        "k": 1.2162,
+        "t": 2504.06,
+        "m": 23.11
+      }
+    ]
+  },
+  "grains": [
+    {
+        "type": "Finocyl",
+        "properties": {
+        "diameter": 0.13335027,
+        "length": 0.55880112,
+        "inhibitedEnds": "Bottom",
+        "coreDiameter": 0.040640075,
+        "numFins": 3,
+        "finWidth": 0.00000001,
+        "finLength": 0.00000001,
+        "invertedFins": false
+        }
+    },
+    {
+        "type": "Finocyl",
+        "properties": {
+        "diameter": 0.13335027,
+        "length": 0.35560071,
+        "inhibitedEnds": "Top",
+        "coreDiameter": 0.040640075,
+        "numFins": 3,
+        "finWidth": 0.00000001,
+        "finLength": 0.00000001,
+        "invertedFins": false
+        }
+    },
+    {
+      "type": "Finocyl",
+      "properties": {
+        "diameter": 0.13335027,
+        "length": 0.20320041,
+        "inhibitedEnds": "Bottom",
+        "coreDiameter": 0.040640075,
+        "numFins": 3,
+        "finWidth": 0.01270003,
+        "finLength": 0.01270003,
+        "invertedFins": false
+      }
+    },
+    {
+      "type": "Finocyl",
+      "properties": {
+        "diameter": 0.13335027,
+        "length": 0.25400051,
+        "inhibitedEnds": "Top",
+        "coreDiameter": 0.040640075,
+        "numFins": 3,
+        "finWidth": 0.01524003,
+        "finLength": 0.02921006,
+        "invertedFins": false
+      }
+    }
+  ],
+  "config": {
+    "maxPressure": 7239750.0,
+    "maxMassFlux": 1054.85232068,
+    "maxMachNumber": 0.7,
+    "minPortThroat": 2.0,
+    "flowSeparationWarnPercent": 0.05,
+    "burnoutWebThres": 0.0000254,
+    "burnoutThrustThres": 0.1,
+    "timestep": 0.03,
+    "ambPressure": 101324.996745,
+    "mapDim": 750,
+    "sepPressureRatio": 0.4
+  }
+}

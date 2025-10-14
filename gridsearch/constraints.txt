@@ -1,2 +1,0 @@
-PeakMassFlux < 0.680388555
-MaxPressure < 7122284
