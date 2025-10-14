@@ -88,7 +88,7 @@ def decode_params(x: np.ndarray, base_config: Dict, design_rules: Dict, schema: 
         core = _strictly_increasing(blocks[f"{main_key}.coreDiameter"])
         finw = _strictly_increasing(blocks[f"{main_key}.finWidth"])
         core_plus_fin = _strictly_increasing(blocks[f"{main_key}.corePlusFinLength"])
-        finl = np.maximum(0.0, core_plus_fin - core)  # ensures finLength >= 0
+        finl = np.maximum(1e-6, core_plus_fin - core)  # ensures finLength >= 0
 
         seg_raw = blocks[f"{main_key}.segmentLengthRaw"]
         total = design_rules[main_key]["length_total"]

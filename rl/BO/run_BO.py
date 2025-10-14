@@ -1,3 +1,12 @@
+import os, sys
+print(">>> CWD:", os.getcwd())
+print(">>> First path:", sys.path[0])
+print(">>> RL visible?", os.path.exists(os.path.join(os.getcwd(), "rl")))
+
+import sys, os
+if __package__ is None or __package__ == "":
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
 import torch
 from rl.BO.helpers import config_loader, parser, encode_decode, save_as
 from rl.BO.BO_torch import simulation, reward
@@ -31,6 +40,7 @@ def bo_optimize(initial_config: Dict, design_rules: Dict, design_schema: Dict, l
     Y = torch.cat(Y_list).to(device)
 
     max_isp = 0
+    max_reward = float('-inf')
 
     for iteration in range(n_iter):
         print(f"\n=== Iteration {iteration + 1} / {n_iter} ===")
@@ -51,8 +61,10 @@ def bo_optimize(initial_config: Dict, design_rules: Dict, design_schema: Dict, l
         Y = torch.cat([Y, torch.tensor([[y_next]], dtype=dtype, device=device)])
 
         isp = simresult["ISP"]
-        if isp >= max_isp: max_isp = isp
-        print(f"Reward: {y_next:.3f} | Best so far: {Y.max().item():.3f} | ISP: {isp}")
+        if y_next >= max_reward: 
+            max_reward = y_next
+            max_isp = isp
+        print(f"Reward: {y_next:.3f} | Best so far: {Y.max().item():.3f} | ISP: {isp} | Best ISP so far: {max_isp}")
 
     best_idx = torch.argmax(Y)
     best_x = X[best_idx].detach().cpu().numpy().ravel()
@@ -69,7 +81,7 @@ if __name__ == "__main__":
     design_schema: parser.Schema = parser.build_schema(design_rules)
     lb, ub = parser.schema_to_bounds(design_schema)
 
-    best_x, best_score = bo_optimize(initial_config, design_rules, design_schema, lb, ub)
+    best_x, best_score = bo_optimize(initial_config, design_rules, design_schema, lb, ub, n_iter=100)
     best_config = encode_decode.decode_params(best_x, initial_config, design_rules, design_schema)
     save_as.save_motor_as_ric(Motor(best_config))
 

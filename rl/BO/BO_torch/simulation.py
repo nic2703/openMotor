@@ -7,7 +7,7 @@ from rl.BO.helpers.feasible import is_feasible
 def run_simulation(x: torch.Tensor, initial_config: Dict, design_rules: Dict, design_schema: Dict) -> Dict:
     candidate_cfg = decode_params(x, initial_config, design_rules, design_schema)
     if not is_feasible(candidate_cfg, design_rules):
-        return {"Success": False, "Error": "Geometry infeasible"}
+        return {"Success": False, "ISP": 0.0, "Error": "Geometry infeasible"}
     
     try:
         motor = Motor(candidate_cfg)
@@ -31,9 +31,11 @@ def run_simulation(x: torch.Tensor, initial_config: Dict, design_rules: Dict, de
             "Success": simresult.success,
             "ISP": simresult.getISP(),
             "Impulse": simresult.getImpulse(),
+            "MaxMassFlux": simresult.getPeakMassFlux(),
             "MaxPressure": simresult.getMaxPressure(),
             "Alerts": simresult.alerts
         }
 
     except Exception as e:
-        return {"Success": False, "Error": str(e), "ISP": 0.0}
+        print(f"run_simulation() failed: {e}")
+        return {"Success": False, "ISP": 0.0, "Error": str(e)}

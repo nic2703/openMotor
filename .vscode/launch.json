@@ -1,0 +1,12 @@
+{
+    "name": "Debug run_BO (module)",
+    "type": "python",
+    "request": "launch",
+    "module": "rl.BO.run_BO",
+    "cwd": "${workspaceFolder}",
+    "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+    },
+    "console": "integratedTerminal",
+    "justMyCode": false
+}
