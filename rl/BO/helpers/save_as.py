@@ -57,13 +57,13 @@ def save_motor_as_ric(motor: Motor) -> str | None:
     finally:
         root.destroy()
 
-def save_motor_locally(motor: Motor) -> str | None:
+def save_motor_locally(motor: Motor, score: float) -> str | None:
     print("Automatically saving to output/")
 
     time = datetime.now()
     time = time.strftime("%Y%M%d_%H%M%S")
     root_path = sys.path[0]
-    path = Path(f"{root_path}/outputs/{time}_motor.ric")
+    path = Path(f"{root_path}/../../outputs/{time}_motor_{float(score)}.ric")
 
     print(path)
 

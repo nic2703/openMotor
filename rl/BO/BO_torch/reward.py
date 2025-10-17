@@ -31,6 +31,6 @@ def reward_function(metrics):
         penalty += (delta_flux / 50.0) ** 2  # tunable scale
 
     # --- Base reward (maximize ISP, penalize violations)
-    reward = metrics["ISP"] - penalty
+    reward = metrics["ISP"] + metrics["Impulse"]/1000.0 + metrics["BurnTime"]*5.0 - penalty
 
     return reward

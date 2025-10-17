@@ -9,7 +9,7 @@ if __package__ is None or __package__ == "":
 
 import torch
 from rl.BO.helpers import config_loader, parser, encode_decode, save_as
-from rl.BO.BO_torch import simulation, reward
+from rl.BO.BO_torch import simulation, reward, search_region
 from typing import Dict
 
 from motorlib.motor import Motor
@@ -19,6 +19,7 @@ from botorch.fit import fit_gpytorch_mll_torch
 from botorch.acquisition import LogExpectedImprovement
 from botorch.optim import optimize_acqf
 from gpytorch.mlls import ExactMarginalLogLikelihood
+from gpytorch.kernels import RBFKernel
 from tqdm import tqdm
 
 def bo_optimize(initial_config: Dict, design_rules: Dict, design_schema: Dict, lb: torch.Tensor, ub: torch.Tensor, n_init=5, n_iter=15, device="cpu"):
@@ -46,12 +47,16 @@ def bo_optimize(initial_config: Dict, design_rules: Dict, design_schema: Dict, l
         print(f"\n=== Iteration {iteration + 1} / {n_iter} ===")
 
         model = SingleTaskGP(X, Y)
+        kernel = model.covar_module
+        kernel.lengthscale = 1.0 * torch.ones(X.shape[-1])
         mll = ExactMarginalLogLikelihood(model.likelihood, model)
         fit_gpytorch_mll_torch(mll)
 
         EI = LogExpectedImprovement(model=model, best_f=Y.max())
 
-        x_next, _ = optimize_acqf(acq_function=EI, bounds=torch.stack([lb.squeeze(0), ub.squeeze(0)]), q=1, num_restarts=5, raw_samples=100)
+        x_best = X[torch.argmax(Y)]
+        lb_new, ub_new = search_region.trust_region((lb, ub), x_best, frac=0.15)
+        x_next, _ = optimize_acqf(acq_function=EI, bounds=torch.stack([lb_new.squeeze(0), ub_new.squeeze(0)]), q=1, num_restarts=5, raw_samples=100)
         x_next_np = x_next.detach().cpu().numpy().ravel()
 
         simresult = simulation.run_simulation(x_next_np, initial_config, design_rules, design_schema)
@@ -81,7 +86,7 @@ if __name__ == "__main__":
     design_schema: parser.Schema = parser.build_schema(design_rules)
     lb, ub = parser.schema_to_bounds(design_schema)
 
-    best_x, best_score = bo_optimize(initial_config, design_rules, design_schema, lb, ub, n_iter=25)
+    best_x, best_score = bo_optimize(initial_config, design_rules, design_schema, lb, ub, n_init=1, n_iter=25)
     best_config = encode_decode.decode_params(best_x, initial_config, design_rules, design_schema)
-    save_as.save_motor_locally(Motor(best_config))
+    save_as.save_motor_locally(Motor(best_config), best_score)
 

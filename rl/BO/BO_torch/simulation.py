@@ -33,6 +33,7 @@ def run_simulation(x: torch.Tensor, initial_config: Dict, design_rules: Dict, de
             "Impulse": simresult.getImpulse(),
             "MaxMassFlux": simresult.getPeakMassFlux(),
             "MaxPressure": simresult.getMaxPressure(),
+            "BurnTime": simresult.getBurnTime(),
             "Alerts": simresult.alerts
         }
 
